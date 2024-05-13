@@ -1,6 +1,7 @@
 volumes:
   nginx-shared-txs:
   nginx-shared-cfg:
+  nginx-media-cfg:
 
 x-healthcheck-db-template: &pghealthcheck
   healthcheck:
@@ -26,6 +27,8 @@ services:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - nginx-shared-txs:/nginx-txs
       - nginx-shared-cfg:/nginx-cfg
+      - nginx-media-cfg:/nginx-media-cfg
+
     depends_on:
       - txs-web
       - cfg-web
@@ -133,6 +136,7 @@ services:
     tty: true
     volumes:
       - nginx-shared-cfg:/nginx
+      - nginx-media-cfg:/output/media
     env_file:
       - container_env_files/cfg.env
     depends_on:
@@ -145,7 +149,7 @@ services:
     <<: *redishealthcheck
 
   cgw-web:
-    image: safeglobal/safe-client-gateway-nest:${CGW_VERSION}
+    image: safeglobal/safe-client-gateway:${CGW_VERSION}
     env_file:
       - container_env_files/cgw.env
     depends_on:
